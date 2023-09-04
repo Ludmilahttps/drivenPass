@@ -1,26 +1,40 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCredentialDto } from './dto/create-credential.dto';
 import { UpdateCredentialDto } from './dto/update-credential.dto';
+import { User } from '@prisma/client';
+import { CredentialsRepository } from './credentials.repository';
 
 @Injectable()
 export class CredentialsService {
-  create(createCredentialDto: CreateCredentialDto) {
-    return 'This action adds a new credential';
+  constructor(private readonly credentialsRepository:CredentialsRepository){}
+
+  async create(createCredentialDto: CreateCredentialDto,user:User) {
+    const credential=await this.credentialsRepository.findByRotulo(createCredentialDto.rotulo,user.id)
+    if(credential) throw new ConflictException()
+    return await this.credentialsRepository.create(createCredentialDto,user);
   }
 
-  findAll() {
-    return `This action returns all credentials`;
+  async findAll(userId:number) {
+    return await this.credentialsRepository.findAll(userId)
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} credential`;
+  async findOne(id: number,userId:number) {
+    const existsCred=await this.credentialsRepository.findById(id)
+    if(!existsCred) throw new NotFoundException()
+
+    const isUser=await this.credentialsRepository.findByIdAndUser(id,userId)
+    if(!isUser) throw new ForbiddenException()
+
+    return isUser
   }
 
-  update(id: number, updateCredentialDto: UpdateCredentialDto) {
-    return `This action updates a #${id} credential`;
-  }
+  async remove(id: number,userId:number) {
+    const existsCred=await this.credentialsRepository.findById(id)
+    if(!existsCred) throw new NotFoundException()
 
-  remove(id: number) {
-    return `This action removes a #${id} credential`;
+    const isUser=await this.credentialsRepository.findByIdAndUser(id,userId)
+    if(!isUser) throw new ForbiddenException()
+    
+    return await this.credentialsRepository.delete(id,userId)
   }
 }

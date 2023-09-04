@@ -1,34 +1,32 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, UseGuards } from '@nestjs/common';
 import { NotesService } from './notes.service';
 import { CreateNoteDto } from './dto/create-note.dto';
-import { UpdateNoteDto } from './dto/update-note.dto';
+import { User as UserPrisma} from '@prisma/client';
+import { User } from '../decorators/user.decorator';
+import { AuthGuard } from '../guards/auth.guard';
 
+@UseGuards(AuthGuard)
 @Controller('notes')
 export class NotesController {
   constructor(private readonly notesService: NotesService) {}
 
   @Post()
-  create(@Body() createNoteDto: CreateNoteDto) {
-    return this.notesService.create(createNoteDto);
+  async create(@Body() createNoteDto: CreateNoteDto,@User() user:UserPrisma) {
+    return await this.notesService.create(createNoteDto,user.id);
   }
 
   @Get()
-  findAll() {
-    return this.notesService.findAll();
+  async findAll(@User() user:UserPrisma) {
+    return await this.notesService.findAll(user.id);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.notesService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateNoteDto: UpdateNoteDto) {
-    return this.notesService.update(+id, updateNoteDto);
+  async findOne(@Param('id') id: string,@User() user:UserPrisma) {
+    return await this.notesService.findOne(+id,user.id);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.notesService.remove(+id);
+  async remove(@Param('id') id: string,@User() user:UserPrisma) {
+    return await this.notesService.remove(+id,user.id);
   }
 }
