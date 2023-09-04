@@ -5,6 +5,7 @@ import * as bcrypt from "bcrypt"
 
 @Injectable()
 export class UsersRepository {
+  
   constructor(private readonly prisma:PrismaService){}
   
   getUserByEmail(email: string) {
@@ -20,6 +21,14 @@ export class UsersRepository {
       data:{
         ...createUserDto,
         senha:bcrypt.hashSync(createUserDto.senha,10)
+      }
+    })
+  }
+
+  getUserById(id: number) {
+    return this.prisma.user.findUnique({
+      where:{
+        id
       }
     })
   }
