@@ -1,11 +1,21 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UsersRepository} from './users.repository';
 
 @Injectable()
 export class UsersService {
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+  constructor(private readonly usersRepository:UsersRepository){}
+  async create(createUserDto: CreateUserDto) {
+    const {email}=createUserDto
+    const user=await this.usersRepository.getUserByEmail(email)
+    if(user) throw new ConflictException()
+
+    return await this.usersRepository.createUser(createUserDto)
+  }
+
+  async getUserByEmail(email: string) {
+    return await this.usersRepository.getUserByEmail(email)
   }
 
   findAll() {
