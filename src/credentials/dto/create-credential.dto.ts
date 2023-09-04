@@ -18,4 +18,7 @@ export class CreateCredentialDto {
     @IsNotEmpty()
     senha:string
     
+    constructor(params?: Partial<CreateCredentialDto>) {
+        Object.assign(this, params);
+    }
 }

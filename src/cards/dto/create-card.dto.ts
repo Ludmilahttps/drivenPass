@@ -1,9 +1,9 @@
-import { IsBoolean, IsDateString, IsNotEmpty, IsNumber, IsString } from "class-validator"
+import { IsBoolean, IsDateString, IsNotEmpty, IsNumber, IsNumberString, IsString } from "class-validator"
 
 export class CreateCardDto {
     @IsNotEmpty()     
-    @IsNumber()
-    cardNumber:number
+    @IsString()
+    cardNumber:string
 
     @IsNotEmpty()  
     @IsString()
@@ -14,11 +14,11 @@ export class CreateCardDto {
     cardCVC:string
 
     @IsNotEmpty() 
-    @IsDateString() 
+    @IsString()
     cardExp:string
 
     @IsNotEmpty()  
-    @IsString()
+    @IsNumberString()
     cardPassword:string
 
     @IsNotEmpty()  
@@ -29,4 +29,7 @@ export class CreateCardDto {
     @IsBoolean()
     virtual:boolean
 
+    constructor(params?: Partial<CreateCardDto>) {
+        Object.assign(this, params);
+    }
 }

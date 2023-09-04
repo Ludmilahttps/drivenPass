@@ -7,7 +7,7 @@ import * as bcrypt from "bcrypt"
 export class UsersRepository {
   
   constructor(private readonly prisma:PrismaService){}
-  
+  private SALT=10
   getUserByEmail(email: string) {
     return this.prisma.user.findFirst({
       where:{
@@ -20,7 +20,7 @@ export class UsersRepository {
     return this.prisma.user.create({
       data:{
         ...createUserDto,
-        senha:bcrypt.hashSync(createUserDto.senha,10)
+        senha:bcrypt.hashSync(createUserDto.senha,this.SALT)
       }
     })
   }

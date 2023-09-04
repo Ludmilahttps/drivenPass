@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, HttpStatus, Post, UseGuards } from '@nestjs/common';
 import { AppService } from './app.service';
 import { AuthGuard } from './guards/auth.guard';
 import { User as UserPrisma} from '@prisma/client';
@@ -15,8 +15,9 @@ export class AppController {
   }
   
   @UseGuards(AuthGuard)
-  @Delete("/erase")
+  @HttpCode(204)
+  @Post("/erase")
   async erase(@Body() eraseDto:EraseDto,@User() user:UserPrisma){
-    return await this.appService.erase(eraseDto,user.id)
+    return await this.appService.erase(eraseDto,user)
   }
 }

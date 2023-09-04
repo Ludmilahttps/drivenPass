@@ -2,35 +2,38 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from './prisma/prisma.service';
 import { EraseDto } from './dto/erase.dto';
 import * as bcrypt from "bcrypt"
+import { UsersService } from './users/users.service';
+import { User } from '@prisma/client';
 
 @Injectable()
 export class AppService {
 
-  constructor(private readonly prisma:PrismaService){}
+  constructor(
+    private readonly prisma:PrismaService,
+    private readonly usersService:UsersService
+    ){}
 
-  async erase(eraseDto:EraseDto,userId: number) {
-    const user= await this.prisma.user.findUnique({
-      where:{id:userId}
-    })
+  async erase(eraseDto:EraseDto,user:User) {
+    const users= await this.usersService.getUserByEmail(user.email)
 
     const valid=await bcrypt.compare(eraseDto.password,user.senha)
     if(!valid) throw new UnauthorizedException()
 
     await this.prisma.cards.deleteMany({
-      where:{userId}
+      where:{userId:user.id}
     })
 
     await this.prisma.notes.deleteMany({
-      where:{userId}
+      where:{userId:user.id}
     })
 
     await this.prisma.credential.deleteMany({
-      where:{userId}
+      where:{userId:user.id}
     })
 
     return await this.prisma.user.delete({
       where:{
-        id:userId
+        id:user.id
       }
     })
   }

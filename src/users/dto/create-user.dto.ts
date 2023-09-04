@@ -8,4 +8,8 @@ export class CreateUserDto {
     @IsStrongPassword()
     @IsNotEmpty()
     senha:string
+
+    constructor(params?: Partial<CreateUserDto>) {
+        Object.assign(this, params);
+    }
 }

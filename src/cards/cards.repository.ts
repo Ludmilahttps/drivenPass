@@ -27,7 +27,7 @@ export class CardsRepository {
     return {
       ...card,
       cardCVC:this.cryptr.decrypt(card.cardCVC),
-        cardPassword:this.cryptr.decrypt(card.cardPassword)
+      cardPassword:this.cryptr.decrypt(card.cardPassword)
     }
   }
 
