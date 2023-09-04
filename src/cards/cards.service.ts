@@ -8,23 +8,19 @@ export class CardsService {
 
   constructor(private readonly cardsRepository:CardsRepository){}
 
-  create(createCardDto: CreateCardDto) {
-    return 'This action adds a new card';
+  async create(createCardDto: CreateCardDto,userId:number) {
+    return await this.cardsRepository.create(createCardDto,userId)
   }
 
-  findAll() {
-    return `This action returns all cards`;
+  async findAll(userId:number) {
+    return await this.cardsRepository.findAll(userId)
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} card`;
+  async findOne(id: number,userId:number) {
+    return await this.cardsRepository.findByIdAndUser(id,userId)
   }
 
-  update(id: number, updateCardDto: UpdateCardDto) {
-    return `This action updates a #${id} card`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} card`;
+  async remove(id: number,userId:number) {
+    return await this.cardsRepository.delete(id,userId)
   }
 }

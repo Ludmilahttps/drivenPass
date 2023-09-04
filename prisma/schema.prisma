@@ -41,9 +41,9 @@ model Cards{
   id Int @id @default(autoincrement())
   cardNumber Int
   cardName String
-  cardCVC Int
+  cardCVC String
   cardExp DateTime
-  cardPassword Int
+  cardPassword String
   cardType String 
   virtual Boolean
   userId Int

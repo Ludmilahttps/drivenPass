@@ -1,14 +1,14 @@
 export class Card {
   private cardNumber:number
   private cardName:string
-  private cardCVC:number
+  private cardCVC:string
   private cardExp: string
   private cardPassword:number
   private cardType: string 
   private virtual: boolean
   private userId:number 
 
-  constructor(cardNumber:number,cardName:string,cardCVC:number,cardExp: string,
+  constructor(cardNumber:number,cardName:string,cardCVC:string,cardExp: string,
     cardPassword:number,cardType: string, virtual: boolean,userId:number ){
         this.cardNumber=cardNumber;
         this.cardName=cardName;
